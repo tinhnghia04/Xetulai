@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Car4U — Thuê ô tô tự lái</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container flex between center">
+      <div class="brand" role="banner" aria-label="Car4U Home">
+        <span class="logo">🚗</span>
+        <a href="#" id="homeLink" class="brand-name">Car4U</a>
+      </div>
+      <nav class="nav" aria-label="Chính">
+        <button class="icon-btn" id="notifBtn" title="Thông báo" aria-label="Thông báo">🔔</button>
+        <button class="icon-btn" id="menuBtn" title="Menu" aria-label="Menu">☰</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- SEARCH SECTION -->
+    <section id="searchSection" class="card">
+      <h1 class="h1">Tìm xe tự lái gần bạn</h1>
+      <form id="searchForm" class="grid grid-4 gap">
+        <label class="field">
+          <span class="label">Thành phố</span>
+          <select id="city" required>
+            <option value="">— Chọn —</option>
+            <option>Hà Nội</option>
+            <option>Hồ Chí Minh</option>
+            <option>Đà Nẵng</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="label">Nhận xe</span>
+          <input type="datetime-local" id="pickupDt" required />
+        </label>
+
+        <label class="field">
+          <span class="label">Trả xe</span>
+          <input type="datetime-local" id="returnDt" required />
+        </label>
+
+        <label class="field">
+          <span class="label">Bộ lọc</span>
+          <select id="sort">
+            <option value="priceAsc">Giá: Thấp → Cao</option>
+            <option value="priceDesc">Giá: Cao → Thấp</option>
+            <option value="ratingDesc">Đánh giá: Cao → Thấp</option>
+          </select>
+        </label>
+
+        <div class="col-span-4 flex end">
+          <button class="btn primary" id="btnSearch" type="submit">Tìm xe</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- RESULTS SECTION -->
+    <section id="resultsSection" class="card" hidden>
+      <div class="results-head flex between center">
+        <h2 class="h2" id="resultsTitle">Kết quả</h2>
+        <div class="inline-note" id="resultsRange"></div>
+      </div>
+      <div id="results" class="grid grid-3 gap"></div>
+    </section>
+
+    <!-- VEHICLE MODAL / DRAWER -->
+    <dialog id="vehicleDialog" class="dialog">
+      <form method="dialog" class="dialog-body">
+        <header class="dialog-header">
+          <h3 class="h3" id="dlgTitle">Chi tiết xe</h3>
+          <button class="icon-btn" value="cancel" aria-label="Đóng">✕</button>
+        </header>
+        <div class="vehicle-detail">
+          <div class="vehicle-hero" id="dlgHero" aria-hidden="true"></div>
+          <div class="vehicle-info">
+            <div class="flex between center">
+              <div class="price" id="dlgPrice"></div>
+              <div class="rating" id="dlgRating"></div>
+            </div>
+            <ul class="bullets" id="dlgBullets"></ul>
+            <div class="policy">
+              <strong>Điều kiện:</strong> Tuổi ≥ 21, GPLX ≥ 12 tháng<br/>
+              <strong>Đặt cọc:</strong> <span id="dlgDeposit"></span>
+            </div>
+            <div class="addons">
+              <label><input type="checkbox" id="insCheckbox"/> Bảo hiểm mở rộng (giảm khấu trừ)</label>
+              <label><input type="checkbox" id="seatCheckbox"/> Ghế trẻ em</label>
+            </div>
+            <div class="flex between center mt-2">
+              <div class="total" id="dlgTotal">Tổng tạm tính: —</div>
+              <button class="btn primary" id="btnBook">Đặt xe</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </dialog>
+
+    <!-- CHECKOUT SECTION -->
+    <section id="checkoutSection" class="card" hidden>
+      <h2 class="h2">Thanh toán & KYC</h2>
+      <div id="checkoutSummary" class="checkout-summary"></div>
+      <form id="checkoutForm" class="grid grid-3 gap">
+        <fieldset class="col-span-3">
+          <legend class="legend">Xác minh danh tính (KYC)</legend>
+          <div class="grid grid-3 gap">
+            <label class="field">
+              <span class="label">Ảnh CCCD (mặt trước)</span>
+              <input type="file" accept="image/*" id="cccdFront" required />
+            </label>
+            <label class="field">
+              <span class="label">Ảnh CCCD (mặt sau)</span>
+              <input type="file" accept="image/*" id="cccdBack" required />
+            </label>
+            <label class="field">
+              <span class="label">Ảnh GPLX</span>
+              <input type="file" accept="image/*" id="drv" required />
+            </label>
+          </div>
+          <div class="note">* Demo: chỉ kiểm tra có file hay không (placeholder). Bản thật cần OCR + Face/Liveness.</div>
+        </fieldset>
+
+        <fieldset>
+          <legend class="legend">Phương thức đặt cọc</legend>
+          <label class="radio"><input name="pay" type="radio" value="card" required/> Thẻ/ Ví</label>
+          <label class="radio"><input name="pay" type="radio" value="cod" /> COD khi nhận xe</label>
+        </fieldset>
+
+        <fieldset>
+          <legend class="legend">Điều khoản</legend>
+          <label class="checkbox">
+            <input type="checkbox" id="terms" /> Tôi đồng ý Điều khoản thuê xe & Chính sách hủy
+          </label>
+        </fieldset>
+
+        <div class="col-span-3 flex end">
+          <button class="btn" id="btnBack">Quay lại</button>
+          <button class="btn primary" id="btnConfirm">Xác nhận đặt xe</button>
+        </div>
+      </form>
+      <div class="inline-note mt-1" id="checkoutNote"></div>
+    </section>
+
+    <!-- CONFIRM / THANK YOU -->
+    <section id="thankyouSection" class="card center" hidden>
+      <h2 class="h2">Đặt xe thành công!</h2>
+      <div id="orderInfo" class="order-info"></div>
+      <div class="flex center mt-2">
+        <button class="btn" id="btnTrack">Theo dõi đơn</button>
+        <button class="btn" id="btnHome">Về trang chủ</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container small center">
+      © <span id="year"></span> Car4U. Tính Nghĩa
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
